@@ -1,11 +1,11 @@
-import { createEslintRule } from '../utils/rule-creator'
+import { createEslintRule } from '../utils/rule-creator.ts'
 
 export const RULE_NAME = 'prefer-use-store-naming-convention'
-export type MESSAGE_IDS =
-  | 'incorrectPrefix'
-  | 'incorrectSuffix'
-  | 'storeNameMismatch'
-type Options = [{ checkStoreNameMismatch: boolean; storeSuffix: string }]
+export type MESSAGE_IDS
+  = | 'incorrectPrefix'
+    | 'incorrectSuffix'
+    | 'storeNameMismatch'
+type Options = [{ checkStoreNameMismatch: boolean, storeSuffix: string }]
 
 export default createEslintRule<Options, MESSAGE_IDS>({
   name: RULE_NAME,
@@ -13,7 +13,7 @@ export default createEslintRule<Options, MESSAGE_IDS>({
     type: 'problem',
     docs: {
       description:
-        'Enforces the convention of naming stores with the prefix `use` followed by the store name.'
+        'Enforces the convention of naming stores with the prefix `use` followed by the store name.',
     },
     schema: [
       {
@@ -21,39 +21,40 @@ export default createEslintRule<Options, MESSAGE_IDS>({
         properties: {
           checkStoreNameMismatch: {
             type: 'boolean',
-            default: false
+            default: false,
           },
           storeSuffix: {
             type: 'string',
-            default: ''
-          }
-        }
-      }
+            default: '',
+          },
+        },
+      },
     ],
     messages: {
       incorrectPrefix:
         'Store names should start with "use" followed by the store name.',
       incorrectSuffix: 'Store names should end with "{{ suffixName }}".',
       storeNameMismatch:
-        'The "{{name}}" variable naming does not match the unique identifier "{{id}}" naming for the store.'
-    }
+        'The "{{name}}" variable naming does not match the unique identifier "{{id}}" naming for the store.',
+    },
   },
   defaultOptions: [
     {
       checkStoreNameMismatch: false,
-      storeSuffix: ''
-    }
+      storeSuffix: '',
+    },
   ],
   create: (context, options) => {
     return {
       CallExpression(node) {
         if (
-          node.callee.type === 'Identifier' &&
-          node.callee.name === 'defineStore' &&
-          node.arguments.length >= 2 &&
-          node.arguments[0].type === 'Literal' &&
-          typeof node.arguments[0].value === 'string' &&
-          node.parent.id.type === 'Identifier'
+          node.callee.type === 'Identifier'
+          && node.callee.name === 'defineStore'
+          && node.arguments.length >= 2
+          && node.arguments[0].type === 'Literal'
+          && typeof node.arguments[0].value === 'string'
+          && node.parent.type === 'VariableDeclarator'
+          && node.parent.id.type === 'Identifier'
         ) {
           const { checkStoreNameMismatch, storeSuffix } = options[0]
           const uniqueId = node.arguments[0].value
@@ -64,7 +65,7 @@ export default createEslintRule<Options, MESSAGE_IDS>({
           if (!variableName.startsWith('use')) {
             context.report({
               node: node.parent,
-              messageId: 'incorrectPrefix'
+              messageId: 'incorrectPrefix',
             })
           }
 
@@ -73,8 +74,8 @@ export default createEslintRule<Options, MESSAGE_IDS>({
               node: node.parent,
               messageId: 'incorrectSuffix',
               data: {
-                suffixName: storeSuffix
-              }
+                suffixName: storeSuffix,
+              },
             })
           }
 
@@ -84,12 +85,12 @@ export default createEslintRule<Options, MESSAGE_IDS>({
               messageId: 'storeNameMismatch',
               data: {
                 name: variableName,
-                id: uniqueId
-              }
+                id: uniqueId,
+              },
             })
           }
         }
-      }
+      },
     }
-  }
+  },
 })

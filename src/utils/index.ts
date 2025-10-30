@@ -1,45 +1,44 @@
 // MIT License
 // Copyright (c) 2018 Jonathan Kim
 // Imported from https://github.com/jest-community/eslint-plugin-jest/blob/main/src/rules/utils/accessors.ts#L6
+import type {
+  TSESTree,
+} from '@typescript-eslint/utils'
 import {
-  TSESLint,
   AST_NODE_TYPES,
-  TSESTree
 } from '@typescript-eslint/utils'
 
-export const joinNames = (a: string | null, b: string | null): string | null =>
-  a && b ? `${a}.${b}` : null
+export function joinNames(a: string | null, b: string | null): string | null {
+  return a && b ? `${a}.${b}` : null
+}
 
 interface TemplateLiteral<Value extends string = string>
   extends TSESTree.TemplateLiteral {
-  quasis: [TSESTree.TemplateElement & { value: { raw: Value; cooked: Value } }];
+  quasis: [TSESTree.TemplateElement & { value: { raw: Value, cooked: Value } }]
 }
 interface StringLiteral<Value extends string = string>
   extends TSESTree.StringLiteral {
-  value: Value;
+  value: Value
 }
 
-export type StringNode<S extends string = string> =
-  | StringLiteral<S>
-  | TemplateLiteral<S>;
+export type StringNode<S extends string = string>
+  = | StringLiteral<S>
+    | TemplateLiteral<S>
 
-export type FunctionExpression =
-  | TSESTree.ArrowFunctionExpression
-  | TSESTree.FunctionExpression;
-
-export const isFunction = (node: TSESTree.Node): node is FunctionExpression =>
-  node.type === AST_NODE_TYPES.FunctionExpression ||
-  node.type === AST_NODE_TYPES.ArrowFunctionExpression
+export type FunctionExpression
+  = | TSESTree.ArrowFunctionExpression
+    | TSESTree.FunctionExpression
 
 /**
  * An `Identifier` with a known `name` value - i.e `expect`.
  */
 interface KnownIdentifier<Name extends string> extends TSESTree.Identifier {
-  name: Name;
+  name: Name
 }
 
 export function getNodeName(node: TSESTree.Node): string | null {
-  if (isSupportedAccessor(node)) return getAccessorValue(node)
+  if (isSupportedAccessor(node))
+    return getAccessorValue(node)
 
   switch (node.type) {
     case AST_NODE_TYPES.TaggedTemplateExpression:
@@ -53,14 +52,11 @@ export function getNodeName(node: TSESTree.Node): string | null {
   return null
 }
 
-export type AccessorNode<Specifics extends string = string> =
-  | StringNode<Specifics>
-  | KnownIdentifier<Specifics>;
+export type AccessorNode<Specifics extends string = string>
+  = | StringNode<Specifics>
+    | KnownIdentifier<Specifics>
 
-export const isSupportedAccessor = <V extends string>(
-  node: TSESTree.Node,
-  value?: V
-): node is AccessorNode<V> => {
+export function isSupportedAccessor<V extends string>(node: TSESTree.Node, value?: V): node is AccessorNode<V> {
   return isIdentifier(node, value) || isStringNode(node, value)
 }
 
@@ -70,13 +66,10 @@ export const isSupportedAccessor = <V extends string>(
  * If a `name` is provided, & the `node` is an `Identifier`,
  * the `name` will be compared to that of the `identifier`.
  */
-export const isIdentifier = <V extends string>(
-  node: TSESTree.Node,
-  name?: V
-): node is KnownIdentifier<V> => {
+export function isIdentifier<V extends string>(node: TSESTree.Node, name?: V): node is KnownIdentifier<V> {
   return (
-    node.type === AST_NODE_TYPES.Identifier &&
-    (name === undefined || node.name === name)
+    node.type === AST_NODE_TYPES.Identifier
+    && (name === undefined || node.name === name)
   )
 }
 
@@ -88,14 +81,11 @@ export const isIdentifier = <V extends string>(
  * If a `value` is provided & the `node` is a `TemplateLiteral`,
  * the `value` will be compared to that of the `TemplateLiteral`.
  */
-const isTemplateLiteral = <V extends string>(
-  node: TSESTree.Node,
-  value?: V
-): node is StringLiteral<V> => {
+function isTemplateLiteral<V extends string>(node: TSESTree.Node, value?: V): node is StringLiteral<V> {
   return (
-    node.type === AST_NODE_TYPES.TemplateLiteral &&
-    node.quasis.length === 1 &&
-    (value === undefined || node.quasis[0].value.raw === value)
+    node.type === AST_NODE_TYPES.TemplateLiteral
+    && node.quasis.length === 1
+    && (value === undefined || node.quasis[0].value.raw === value)
   )
 }
 
@@ -105,33 +95,28 @@ const isTemplateLiteral = <V extends string>(
  * If a `value` is provided & the `node` is a `StringLiteral`,
  * the `value` will be compared to that of the `StringLiteral`.
  */
-const isStringLiteral = <V extends string>(
-  node: TSESTree.Node,
-  value?: V
-): node is StringLiteral<V> =>
-  node.type === AST_NODE_TYPES.Literal &&
-  typeof node.value === 'string' &&
-  (value === undefined || node.value === value)
+function isStringLiteral<V extends string>(node: TSESTree.Node, value?: V): node is StringLiteral<V> {
+  return node.type === AST_NODE_TYPES.Literal
+    && typeof node.value === 'string'
+    && (value === undefined || node.value === value)
+}
 
 /**
  * Checks if the given `node` is a {@link StringNode}.
  */
-export const isStringNode = <V extends string>(
-  node: TSESTree.Node,
-  specifics?: V
-): node is StringNode<V> =>
-  isStringLiteral(node, specifics) || isTemplateLiteral(node, specifics)
+export function isStringNode<V extends string>(node: TSESTree.Node, specifics?: V): node is StringNode<V> {
+  return isStringLiteral(node, specifics) || isTemplateLiteral(node, specifics)
+}
 
 /**
  * Gets the value of the given `AccessorNode`,
  * account for the different node types.
  */
-export const getAccessorValue = <S extends string = string>(
-  accessor: AccessorNode<S>
-): S =>
-  accessor.type === AST_NODE_TYPES.Identifier
+export function getAccessorValue<S extends string = string>(accessor: AccessorNode<S>): S {
+  return accessor.type === AST_NODE_TYPES.Identifier
     ? accessor.name
     : getStringValue(accessor)
+}
 
 /**
  * Gets the value of the given `StringNode`.
@@ -139,39 +124,8 @@ export const getAccessorValue = <S extends string = string>(
  * If the `node` is a `TemplateLiteral`, the `raw` value is used;
  * otherwise, `value` is returned instead.
  */
-export const getStringValue = <S extends string>(node: StringNode<S>): S =>
-  node?.type === AST_NODE_TYPES.TemplateLiteral
+export function getStringValue<S extends string>(node: StringNode<S>): S {
+  return node?.type === AST_NODE_TYPES.TemplateLiteral
     ? node.quasis[0].value.raw
     : node?.value
-
-export const replaceAccessorFixer = (
-  fixer: TSESLint.RuleFixer,
-  node: AccessorNode,
-  text: string
-) => {
-  return fixer.replaceText(
-    node,
-    node.type === AST_NODE_TYPES.Identifier ? text : `'${text}'`
-  )
-}
-
-export const removeExtraArgumentsFixer = (
-  fixer: TSESLint.RuleFixer,
-  context: TSESLint.RuleContext<string, unknown[]>,
-  func: TSESTree.CallExpression,
-  from: number
-): TSESLint.RuleFix => {
-  const firstArg = func.arguments[from]
-  const lastArg = func.arguments[func.arguments.length - 1]
-
-  const sourceCode = context.getSourceCode()
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  let tokenAfterLastParam = sourceCode.getTokenAfter(lastArg)!
-
-  if (tokenAfterLastParam.value === ',')
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    tokenAfterLastParam = sourceCode.getTokenAfter(tokenAfterLastParam)!
-
-  return fixer.removeRange([firstArg.range[0], tokenAfterLastParam.range[0]])
 }

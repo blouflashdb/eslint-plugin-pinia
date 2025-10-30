@@ -1,14 +1,14 @@
-import { RULE_NAME as requireSetupStorePropsName } from './rules/require-setup-store-properties-export'
-import { RULE_NAME as neverExportInitializedStoreName } from './rules/never-export-initialized-store'
-import { RULE_NAME as preferNamingConventionName } from './rules/prefer-use-store-naming-convention'
-import { RULE_NAME as preferSingleStoreName } from './rules/prefer-single-store-per-file'
-import { RULE_NAME as noReturnGlobalPropertiesName } from './rules/no-return-global-properties'
-import { RULE_NAME as noDuplicateStoreIdsName } from './rules/no-duplicate-store-ids'
-import { RULE_NAME as noStoreToRefs } from './rules/no-store-to-refs-in-store'
-import rules from './rules/index'
+import rules from './rules/index.ts'
+import { RULE_NAME as neverExportInitializedStoreName } from './rules/never-export-initialized-store.ts'
+import { RULE_NAME as noDuplicateStoreIdsName } from './rules/no-duplicate-store-ids.ts'
+import { RULE_NAME as noReturnGlobalPropertiesName } from './rules/no-return-global-properties.ts'
+import { RULE_NAME as noStoreToRefs } from './rules/no-store-to-refs-in-store.ts'
+import { RULE_NAME as preferSingleStoreName } from './rules/prefer-single-store-per-file.ts'
+import { RULE_NAME as preferNamingConventionName } from './rules/prefer-use-store-naming-convention.ts'
+import { RULE_NAME as requireSetupStorePropsName } from './rules/require-setup-store-properties-export.ts'
 
 const plugin = {
-  rules
+  rules,
 }
 
 const allRules = {
@@ -18,7 +18,7 @@ const allRules = {
   [noStoreToRefs]: 'warn',
   [preferNamingConventionName]: 'warn',
   [preferSingleStoreName]: 'off',
-  [requireSetupStorePropsName]: 'warn'
+  [requireSetupStorePropsName]: 'warn',
 }
 
 const recommended = {
@@ -27,45 +27,39 @@ const recommended = {
   [noReturnGlobalPropertiesName]: 'error',
   [noStoreToRefs]: 'error',
   [preferNamingConventionName]: 'warn',
-  [requireSetupStorePropsName]: 'error'
+  [requireSetupStorePropsName]: 'error',
 }
 
 function createConfig<T extends Record<string, unknown>>(
   _rules: T,
-  flat = false
-) {
+): {
+  plugins: Record<string, typeof plugin>
+  rules: Record<`pinia/${string}`, string>
+} {
   const name = 'pinia'
   const constructedRules: Record<`pinia/${string}`, string> = Object.keys(
-    _rules
+    _rules,
   ).reduce((acc, ruleName) => {
     return {
       ...acc,
-      [`${name}/${ruleName}`]: _rules[ruleName]
+      [`${name}/${ruleName}`]: _rules[ruleName],
     }
   }, {})
-  if (flat) {
-    return {
-      plugins: {
-        [name]: plugin
-      },
-      rules: constructedRules
-    }
-  } else {
-    return {
-      plugins: [name],
-      rules: constructedRules
-    }
+
+  return {
+    plugins: {
+      [name]: plugin,
+    },
+    rules: constructedRules,
   }
 }
 
 const configs = {
   all: createConfig(allRules),
   recommended: createConfig(recommended),
-  'all-flat': createConfig(allRules, true),
-  'recommended-flat': createConfig(recommended, true)
 }
 
 export default {
   ...plugin,
-  configs
+  configs,
 }

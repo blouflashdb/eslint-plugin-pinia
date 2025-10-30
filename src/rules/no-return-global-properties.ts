@@ -1,4 +1,4 @@
-import { createEslintRule } from '../utils/rule-creator'
+import { createEslintRule } from '../utils/rule-creator.ts'
 
 export const RULE_NAME = 'no-return-global-properties'
 export type MESSAGE_IDS = 'returnGlobalProperties'
@@ -10,13 +10,13 @@ export default createEslintRule<Options, MESSAGE_IDS>({
     type: 'problem',
     docs: {
       description:
-        'Disallows returning globally provided properties from Pinia stores.'
+        'Disallows returning globally provided properties from Pinia stores.',
     },
     schema: [],
     messages: {
       returnGlobalProperties:
-        'Do not return properties like {{property}} as they are globally available and should not be returned from stores.'
-    }
+        'Do not return properties like {{property}} as they are globally available and should not be returned from stores.',
+    },
   },
   defaultOptions: [],
   create: (context) => {
@@ -25,7 +25,12 @@ export default createEslintRule<Options, MESSAGE_IDS>({
     return {
       VariableDeclaration(node) {
         node.declarations.forEach((declaration) => {
-          if (declaration.init && declaration.init.type === 'CallExpression') {
+          if (
+            declaration.init
+            && declaration.init.type === 'CallExpression'
+            && declaration.init.callee.type === 'Identifier'
+            && declaration.id.type === 'Identifier'
+          ) {
             const calleeName = declaration.init.callee.name
             if (calleeName === 'useRoute' || calleeName === 'inject')
               variablesUsingGlobalCallee.add(declaration.id.name)
@@ -37,21 +42,26 @@ export default createEslintRule<Options, MESSAGE_IDS>({
         if (argument && argument.type === 'ObjectExpression') {
           const { properties } = argument
 
-          if (!properties) return
+          if (!properties)
+            return
 
           properties.forEach((property) => {
-            if (variablesUsingGlobalCallee.has(property?.value?.name)) {
+            if (
+              property.type === 'Property'
+              && property.value.type === 'Identifier'
+              && variablesUsingGlobalCallee.has(property.value.name)
+            ) {
               context.report({
                 messageId: 'returnGlobalProperties',
                 node: property,
                 data: {
-                  property: property?.value?.name
-                }
+                  property: property.value.name,
+                },
               })
             }
           })
         }
-      }
+      },
     }
-  }
+  },
 })

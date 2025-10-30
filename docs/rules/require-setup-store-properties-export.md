@@ -18,14 +18,12 @@ export const useCounterStore = defineStore('counter', () => {
 
   return { doubleCount }
 })
-
 ```
 
 ```js
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0)
 })
-
 ```
 
 ✅ Examples of **correct** code for this rule:

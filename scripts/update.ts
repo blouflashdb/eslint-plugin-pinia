@@ -1,6 +1,6 @@
-import process from 'node:process'
-import { resolve } from 'node:path'
 import fs from 'node:fs'
+import { resolve } from 'node:path'
+import process from 'node:process'
 
 const cwd = process.cwd()
 
@@ -28,7 +28,7 @@ function generateRules() {
     'export default {',
     ...rules.map(i => `  [${camelCase(i)}Name]: ${camelCase(i)},`),
     '}',
-    ''
+    '',
   ].join('\n')
 
   fs.writeFileSync(resolve(rulesDir, targetFile), content)

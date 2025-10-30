@@ -1,6 +1,6 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { AST_NODE_TYPES } from '@typescript-eslint/utils'
-import { createEslintRule } from '../utils/rule-creator'
+import { createEslintRule } from '../utils/rule-creator.ts'
 
 export const RULE_NAME = 'no-duplicate-store-ids'
 export type MESSAGE_IDS = 'duplicatedStoreIds'
@@ -13,12 +13,12 @@ export default createEslintRule<Options, MESSAGE_IDS>({
   meta: {
     type: 'problem',
     docs: {
-      description: 'Disallow duplicate store ids.'
+      description: 'Disallow duplicate store ids.',
     },
     schema: [],
     messages: {
-      duplicatedStoreIds: 'No duplicated store ids allowed: {{storeId}}'
-    }
+      duplicatedStoreIds: 'No duplicated store ids allowed: {{storeId}}',
+    },
   },
   defaultOptions: [],
   create: (context) => {
@@ -28,7 +28,8 @@ export default createEslintRule<Options, MESSAGE_IDS>({
     if (!crtStoreIds) {
       crtStoreIds = new Set()
       storeIdsCache.set(filepath, crtStoreIds)
-    } else {
+    }
+    else {
       crtStoreIds.clear()
     }
 
@@ -48,7 +49,8 @@ export default createEslintRule<Options, MESSAGE_IDS>({
         if (crtStoreIds.has(value)) {
           reportError()
           return
-        } else {
+        }
+        else {
           crtStoreIds.add(value)
         }
 
@@ -59,16 +61,16 @@ export default createEslintRule<Options, MESSAGE_IDS>({
           }
         }
 
-        function reportError() {
+        function reportError(): void {
           context.report({
             node: storeId,
             messageId: 'duplicatedStoreIds',
             data: {
-              storeId: value
-            }
+              storeId: value,
+            },
           })
         }
-      }
+      },
     }
-  }
+  },
 })

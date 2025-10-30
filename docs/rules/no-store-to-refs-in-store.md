@@ -48,5 +48,4 @@ export const useCartStore = defineStore('cart', () => {
 
   return { summary, purchase }
 })
-
 ```

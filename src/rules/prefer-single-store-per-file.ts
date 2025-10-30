@@ -1,4 +1,4 @@
-import { createEslintRule } from '../utils/rule-creator'
+import { createEslintRule } from '../utils/rule-creator.ts'
 
 export const RULE_NAME = 'prefer-single-store-per-file'
 export type MESSAGE_IDS = 'multipleStores'
@@ -9,16 +9,16 @@ export default createEslintRule<Options, MESSAGE_IDS>({
   meta: {
     type: 'problem',
     docs: {
-      description: 'Encourages defining each store in a separate file.'
+      description: 'Encourages defining each store in a separate file.',
     },
     schema: [],
     messages: {
-      multipleStores: 'Only one store definition per file is allowed.'
-    }
+      multipleStores: 'Only one store definition per file is allowed.',
+    },
   },
   defaultOptions: [],
   create: (context) => {
-    let storeDeclaration = null
+    let storeDeclaration: any = null
 
     return {
       Program() {
@@ -29,14 +29,15 @@ export default createEslintRule<Options, MESSAGE_IDS>({
         if (callee.type === 'Identifier' && callee.name === 'defineStore') {
           if (!storeDeclaration) {
             storeDeclaration = node
-          } else {
+          }
+          else {
             context.report({
               messageId: 'multipleStores',
-              node: storeDeclaration
+              node: storeDeclaration,
             })
           }
         }
-      }
+      },
     }
-  }
+  },
 })

@@ -1,105 +1,64 @@
 {
-	"name": "eslint-plugin-pinia",
-	"version": "0.1.4",
-	"license": "MIT",
-	"description": "ESLint plugin for Pinia best practices",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/lisilinhart/eslint-plugin-pinia.git"
-	},
-	"keywords": [
-		"eslint",
-		"eslint-plugin",
-		"eslint-config",
-		"vue",
-		"vuejs",
-		"pinia",
-		"piniajs",
-		"rules"
-	],
-	"author": "Lisi Linhart (https://github.com/lisilinhart)",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"require": "./dist/index.cjs",
-			"default": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"files": [
-		"dist",
-		"package.json",
-		"LICENSE",
-		"README.md"
-	],
-	"publishConfig": {
-		"@lisilinhart:registry": "https://npm.pkg.github.com"
-	},
-	"scripts": {
-		"build": "unbuild",
-		"update": "tsx scripts/update && npm run update:eslint-docs",
-		"lint:md": "markdownlint \"**/*.md\" --fix",
-		"lint:eslint-docs": "npm run build && eslint-doc-generator --check",
-		"lint:js": "eslint . --fix",
-		"lint": "concurrently --prefixColors auto \"npm:lint:*\"",
-		"release": "npm run bump && npm publish",
-		"bump": "npm run build && bumpp package.json --commit --push --tag",
-		"stub": "unbuild --stub",
-		"test:ci": "vitest run",
-		"test": "vitest",
-		"init:eslint-docs": "npm run build && eslint-doc-generator --init-rule-docs",
-		"update:eslint-docs": "npm run build && eslint-doc-generator",
-		"tsc": "tsc --noEmit",
-		"prepare": "husky",
-		"commitlint": "commitlint --edit"
-	},
-	"devDependencies": {
-		"@babel/types": "^7.25.4",
-		"@commitlint/cli": "^19.4.0",
-		"@commitlint/config-conventional": "^19.2.2",
-		"@types/mocha": "^10.0.7",
-		"@types/node": "^22.5.0",
-		"@typescript-eslint/eslint-plugin": "^7.18.0",
-		"@typescript-eslint/rule-tester": "^7.18.0",
-		"@veritem/eslint-config": "^0.0.11",
-		"bumpp": "^9.5.2",
-		"concurrently": "^8.2.2",
-		"eslint": "^8.57.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-doc-generator": "^1.7.1",
-		"eslint-plugin-eslint-plugin": "^6.2.0",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-pinia": "file:.",
-		"eslint-plugin-prettier": "^5.2.1",
-		"eslint-plugin-unused-imports": "^3.2.0",
-		"execa": "^9.3.1",
-		"husky": "^9.1.5",
-		"markdownlint-cli": "^0.41.0",
-		"pinia": "^2.1.7",
-		"prettier": "^3.3.3",
-		"ts-node": "^10.9.2",
-		"tsx": "^4.18.0",
-		"typescript": "^5.5.4",
-		"unbuild": "^2.0.0",
-		"vitest": "^1.6.0"
-	},
-	"engines": {
-		"node": ">= 18"
-	},
-	"peerDependencies": {
-		"@typescript-eslint/utils": ">= 7.5 || 8.0.1",
-		"eslint": ">=8.0.0"
-	},
-	"peerDependenciesMeta": {
-		"@typescript-eslint/utils": {
-			"optional": true
-		}
-	},
-	"release": {
-		"branches": [
-			"main"
-		]
-	}
+  "name": "@blouflashdb/eslint-plugin-pinia",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "ESLint plugin for Pinia best practices",
+  "author": "Daniel Schmitz (https://github.com/blouflashdb)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blouflashdb/eslint-plugin-pinia.git"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "eslint-config",
+    "vue",
+    "vuejs",
+    "pinia",
+    "piniajs",
+    "rules"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "engines": {
+    "node": ">= 22"
+  },
+  "scripts": {
+    "build": "tsdown --clean --dts",
+    "update": "tsx scripts/update",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "release": "npm run bump && npm publish",
+    "bump": "npm run build && bumpp package.json --commit --push --tag",
+    "stub": "obuild --stub",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.1.0",
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^24.9.2",
+    "bumpp": "^10.3.1",
+    "eslint": "^9.38.0",
+    "eslint-plugin-format": "^1.0.2",
+    "pinia": "^3.0.3",
+    "prettier": "^3.6.2",
+    "tsdown": "^0.15.12",
+    "typescript": "^5.9.3"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  }
 }

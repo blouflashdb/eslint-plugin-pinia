@@ -12,8 +12,8 @@ This rule ensures that Pinia stores do not return globally provided properties l
 
 ```js
 import { defineStore } from 'pinia'
-import { useRoute } from 'vue-router'
 import { inject } from 'vue'
+import { useRoute } from 'vue-router'
 
 const useSearchFilters = defineStore('search-filters', () => {
   const route = useRoute()

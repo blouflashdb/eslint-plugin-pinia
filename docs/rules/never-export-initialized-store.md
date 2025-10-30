@@ -14,45 +14,45 @@ This rule ensures that we never export an initialized store.
 
 ```js
 // counter.js
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0);
-  return { count };
-});
+  const count = ref(0)
+  return { count }
+})
 
-export const foo = useCounterStore();
+export const foo = useCounterStore()
 ```
 
 ```js
 // counter.js
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0);
-  return { count };
-});
+  const count = ref(0)
+  return { count }
+})
 
-export default useCounterStore();
+export default useCounterStore()
 ```
 
 ✅ Examples of **correct** code for this rule:
 
 ```js
 // counter.js
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0);
-  return { count };
-});
+  const count = ref(0)
+  return { count }
+})
 ```
 
 ```js
 // app.vue
-import { useCounterStore } from './counter.js';
+import { useCounterStore } from './counter.js'
 
-const store = useCounterStore();
+const store = useCounterStore()
 ```
 
 Exporting store will cause unexpected results when application uses server side rendering.

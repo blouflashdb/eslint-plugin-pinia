@@ -63,4 +63,3 @@ The scope should specify the rule affected by the change. For example:
 - refactor(prefer-use-store-naming-convention): Refactors utility functions in the utils component
 - test(prefer-use-store-naming-convention): Adds test cases for API endpoints
 - chore(prefer-use-store-naming-convention): Updates build scripts and dependencies
-
