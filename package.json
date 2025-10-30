@@ -1,7 +1,7 @@
 {
   "name": "@blouflashdb/eslint-plugin-pinia",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ESLint plugin for Pinia best practices",
   "author": "Daniel Schmitz (https://github.com/blouflashdb)",
   "license": "MIT",
