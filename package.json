@@ -13,6 +13,8 @@
     "eslint",
     "eslint-plugin",
     "eslint-config",
+    "eslint-flat-config",
+    "antfu",
     "vue",
     "vuejs",
     "pinia",
@@ -35,12 +37,10 @@
   },
   "scripts": {
     "build": "tsdown --clean --dts",
-    "update": "tsx scripts/update",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "release": "npm run bump && npm publish",
     "bump": "npm run build && bumpp package.json --commit --push --tag",
-    "stub": "obuild --stub",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

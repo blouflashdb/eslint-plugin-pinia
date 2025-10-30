@@ -1,65 +1,37 @@
-import rules from './rules/index.ts'
-import { RULE_NAME as neverExportInitializedStoreName } from './rules/never-export-initialized-store.ts'
-import { RULE_NAME as noDuplicateStoreIdsName } from './rules/no-duplicate-store-ids.ts'
-import { RULE_NAME as noReturnGlobalPropertiesName } from './rules/no-return-global-properties.ts'
-import { RULE_NAME as noStoreToRefs } from './rules/no-store-to-refs-in-store.ts'
-import { RULE_NAME as preferSingleStoreName } from './rules/prefer-single-store-per-file.ts'
-import { RULE_NAME as preferNamingConventionName } from './rules/prefer-use-store-naming-convention.ts'
-import { RULE_NAME as requireSetupStorePropsName } from './rules/require-setup-store-properties-export.ts'
+import type { ESLint, Linter } from 'eslint'
+import pkg from '../package.json' with { type: 'json' }
+import neverExportInitializedStore from './rules/never-export-initialized-store.ts'
+import noDuplicateStoreIds from './rules/no-duplicate-store-ids.ts'
+import noReturnGlobalProperties from './rules/no-return-global-properties.ts'
+import noStoreToRefsInStore from './rules/no-store-to-refs-in-store.ts'
+import preferSingleStorePerFile from './rules/prefer-single-store-per-file.ts'
+import preferUseStoreNamingConvention from './rules/prefer-use-store-naming-convention.ts'
+import requireSetupStorePropertiesExport from './rules/require-setup-store-properties-export.ts'
 
 const plugin = {
-  rules,
+  meta: {
+    name: 'pinia',
+    version: pkg.version,
+  },
+  rules: {
+    'never-export-initialized-store': neverExportInitializedStore,
+    'no-duplicate-store-ids': noDuplicateStoreIds,
+    'no-return-global-properties': noReturnGlobalProperties,
+    'no-store-to-refs-in-store': noStoreToRefsInStore,
+    'prefer-single-store-per-file': preferSingleStorePerFile,
+    'prefer-use-store-naming-convention': preferUseStoreNamingConvention,
+    'require-setup-store-properties-export': requireSetupStorePropertiesExport,
+  },
+} satisfies ESLint.Plugin
+
+export default plugin
+
+type RuleDefinitions = typeof plugin['rules']
+
+export type RuleOptions = {
+  [K in keyof RuleDefinitions]: RuleDefinitions[K]['defaultOptions']
 }
 
-const allRules = {
-  [neverExportInitializedStoreName]: 'warn',
-  [noDuplicateStoreIdsName]: 'warn',
-  [noReturnGlobalPropertiesName]: 'warn',
-  [noStoreToRefs]: 'warn',
-  [preferNamingConventionName]: 'warn',
-  [preferSingleStoreName]: 'off',
-  [requireSetupStorePropsName]: 'warn',
-}
-
-const recommended = {
-  [neverExportInitializedStoreName]: 'error',
-  [noDuplicateStoreIdsName]: 'error',
-  [noReturnGlobalPropertiesName]: 'error',
-  [noStoreToRefs]: 'error',
-  [preferNamingConventionName]: 'warn',
-  [requireSetupStorePropsName]: 'error',
-}
-
-function createConfig<T extends Record<string, unknown>>(
-  _rules: T,
-): {
-  plugins: Record<string, typeof plugin>
-  rules: Record<`pinia/${string}`, string>
-} {
-  const name = 'pinia'
-  const constructedRules: Record<`pinia/${string}`, string> = Object.keys(
-    _rules,
-  ).reduce((acc, ruleName) => {
-    return {
-      ...acc,
-      [`${name}/${ruleName}`]: _rules[ruleName],
-    }
-  }, {})
-
-  return {
-    plugins: {
-      [name]: plugin,
-    },
-    rules: constructedRules,
-  }
-}
-
-const configs = {
-  all: createConfig(allRules),
-  recommended: createConfig(recommended),
-}
-
-export default {
-  ...plugin,
-  configs,
+export type Rules = {
+  [K in keyof RuleOptions]: Linter.RuleEntry<RuleOptions[K]>
 }
