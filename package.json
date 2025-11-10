@@ -53,7 +53,7 @@
     "eslint-plugin-format": "^1.0.2",
     "pinia": "^3.0.3",
     "prettier": "^3.6.2",
-    "tsdown": "^0.15.12",
+    "tsdown": "^0.16.1",
     "typescript": "^5.9.3"
   },
   "release": {
